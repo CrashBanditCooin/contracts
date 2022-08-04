@@ -49,11 +49,15 @@ const config: HardhatUserConfig = {
       accounts: [DEPLOYER_PRIVATE_KEY],
       gasPrice: utils.parseUnits("1.002", "gwei").toNumber(),
     },
-    evmostestnet: {
-      url: `https://eth.bd.evmos.dev:8545`,
+    avalanche: {
+      url: 'https://ava.spacejelly.network/api/ext/bc/C/rpc',
       accounts: [DEPLOYER_PRIVATE_KEY],
-      gasPrice: utils.parseUnits("50", "gwei").toNumber(),
-      chainId: 9000
+      chainId: 43114,
+    },
+    fuji: {
+      url: 'https://api.avax-test.network/ext/bc/C/rpc',
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      chainId: 43113,
     },
   },
   abiExporter: {
