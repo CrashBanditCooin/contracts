@@ -1,13 +1,6 @@
-# Uniswap V2
+# Fork Goose Finance
 
-Forked from uniswap/v2-periphery at commit `2efa12e0f2d808d9b49737927f0e416fafa5af68`
-
-[![Actions Status](https://github.com/Uniswap/uniswap-v2-periphery/workflows/CI/badge.svg)](https://github.com/Uniswap/uniswap-v2-periphery/actions)
-[![npm](https://img.shields.io/npm/v/@uniswap/v2-periphery?style=flat-square)](https://npmjs.com/package/@uniswap/v2-periphery)
-
-In-depth documentation on Uniswap V2 is available at [uniswap.org](https://uniswap.org/docs).
-
-The built contract artifacts can be browsed via [unpkg.com](https://unpkg.com/browse/@uniswap/v2-periphery@latest/).
+Forked from Goose Finance
 
 # Local Development
 
@@ -34,37 +27,44 @@ Edit `.env.example` file in `.env` and update it :
 
 ## Deploy Contracts
 
-### 1) Router
+### 1) Token
 #### Deployment : 
-`npx hardhat deploy-router --network fuji`
-
-#### Verify :
-`npx hardhat verify-router --network fuji`
+`npx hardhat deploy-token --to <ADDRESS> --amount 50000 `
 
 ### 2) Multicall
 #### Deployment :
-`npx hardhat deploy-multicall2 --network fuji`
+`npx hardhat deploy-multicall --network dogechain`
 
-#### Verify :
-`npx hardhat verify-multicall2 --network fuji`
-
-### 3) Token contract 1
+### 3) Masterchef
 #### Deployment :
-`npx hardhat deploy-token --to <WALLET ADDRESS> --supply 100000000 --name MockAVAX --symbol MockAVAX  --network fuji`
+`npx hardhat deploy-masterchef --tokenperblock 1000000000000000000 --start 1272463 `
 
-#### Verify :
-`npx hardhat verify-token --to <WALLET ADDRESS> --supply 100000000 --name MockAVAX --symbol MockAVAX  --network fuji`
+#### Add pools :
+##### BULL/WDOGE :
+` npx hardhat add-pool --allocpoint 3000 --lptoken <ADDRESS> --depositfee 0 --update true `
+`
+##### BULL/USDC :
+` npx hardhat add-pool --allocpoint 3000000000000000000000 --lptoken <ADDRESS> --depositfee 0 --update true 
+`
+##### BULL/ETH :
+` npx hardhat add-pool --allocpoint 2100000000000000000000 --lptoken <ADDRESS> --depositfee 0 --update true 
+`
+##### BULL :
+` npx hardhat add-pool --allocpoint 900000000000000000000 --lptoken <ADDRESS> --depositfee 0 --update true 
+`
+##### WDOGE (2% deposit fee) :
+` npx hardhat add-pool --allocpoint 300000000000000000000 --lptoken <ADDRESS> --depositfee 20 --update true 
+`
+##### ETH (2% deposit fee):
+` npx hardhat add-pool --allocpoint 300000000000000000000 --lptoken <ADDRESS> --depositfee 20 --update true 
+`
+##### USDC (2% deposit fee) :
+` npx hardhat add-pool --allocpoint 300000000000000000000 --lptoken <ADDRESS> --depositfee 20 --update true 
+`
+### 4) Ownership token to masterchef
+#### Transfers ownership:
+`npx hardhat transfer-ownership --to <ADDRESS> `
 
-### 4) Token contract 2
-#### Deployment :
-`npx hardhat deploy-token --to <WALLET ADDRESS> --supply 100000000 --name MockToken --symbol MockToken --network fuji`
-
-#### Verify :
-`npx hardhat verify-token --to <WALLET ADDRESS> --supply 100000000 --name MockToken --symbol MockToken --network fuji`
-
-## Run Tests
-
-`yarn test`
 
 
 

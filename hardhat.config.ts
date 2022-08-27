@@ -1,4 +1,5 @@
 
+// @ts-ignore
 import { HardhatUserConfig, task } from "hardhat/config";
 import "@typechain/hardhat";
 import "@nomiclabs/hardhat-ethers";
@@ -6,6 +7,7 @@ import "@nomiclabs/hardhat-etherscan";
 import "hardhat-abi-exporter";
 
 import { utils, Wallet } from "ethers";
+// @ts-ignore
 import * as dotenv from "dotenv";
 dotenv.config({ path: `${__dirname}/.env` });
 
@@ -23,7 +25,7 @@ const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY || (Wallet.createR
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   solidity: {
-    version: "0.6.6",
+    version: "0.6.12",
     settings: {
       optimizer: {
         enabled: true,
@@ -44,21 +46,7 @@ const config: HardhatUserConfig = {
       accounts: [DEPLOYER_PRIVATE_KEY],
       gasPrice: utils.parseUnits("150", "gwei").toNumber(),
     },
-    rinkeby: {
-      url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_PROJECT_ID}`,
-      accounts: [DEPLOYER_PRIVATE_KEY],
-      gasPrice: utils.parseUnits("1.002", "gwei").toNumber(),
-    },
-    avalanche: {
-      url: 'https://ava.spacejelly.network/api/ext/bc/C/rpc',
-      accounts: [DEPLOYER_PRIVATE_KEY],
-      chainId: 43114,
-    },
-    fuji: {
-      url: 'https://api.avax-test.network/ext/bc/C/rpc',
-      accounts: [DEPLOYER_PRIVATE_KEY],
-      chainId: 43113,
-    },
+
   },
   abiExporter: {
     path: "./dist/abi",

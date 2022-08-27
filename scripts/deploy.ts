@@ -6,10 +6,10 @@ import { ethers } from 'ethers'
 
 const logger: Logger = new Logger()
 
-task('deploy-router', 'Deploys UniswapV2Router02 contract')
+task('deploy-token', 'Deploy Bull token contract')
     .setAction(async (args, hre) => {
-        const factory = await hre.ethers.getContractFactory(`contracts/UniswapV2Router02.sol:UniswapV2Router02`)
-        const instance = await factory.deploy(config.factory, config.weth9)
+        const token = await hre.ethers.getContractFactory(`contracts/BullToken.sol:BullToken`)
+        const instance = await token.deploy()
 
         await instance.deployed()
 
@@ -17,65 +17,70 @@ task('deploy-router', 'Deploys UniswapV2Router02 contract')
     })
 
 
-task("verify-router", "Verifies router Contract")
+task("verify-token", "Verify Bull token Contract")
+  .addParam("to", "address to send tokens to")
+  .addParam("amount", "amount of token")
     .setAction(
         async (args, hre) => {
             await hre.run("verify:verify", {
-                address: config.router,
-                constructorArguments: [config.factory, config.weth9],
-                contract: "contracts/UniswapV2Router02.sol:UniswapV2Router02"
-            });
-        }
-    );
-
-
-task('deploy-multicall2', 'Deploys Multicall2 contract')
-    .setAction(async (args, hre) => {
-        const factory = await hre.ethers.getContractFactory(`contracts/Multicall2.sol:Multicall2`)
-        const instance = await factory.deploy()
-
-        await instance.deployed()
-
-        logger.info(instance.address)
-    })
-
-
-task("verify-multicall2", "Verifies multicall2 Contract")
-    .setAction(
-        async (args, hre) => {
-            await hre.run("verify:verify", {
-                address: config.router,
+                address: config.bullAddress,
                 constructorArguments: [],
-                contract: "contracts/Multicall2.sol:Multicall2"
+                contract: "contracts/BullToken.sol:BullToken"
             });
         }
     );
 
-task('deploy-token', 'Deploys MockERC20 contract')
-    .addParam("to", "address to send tokens to")
-    .addParam("supply", "Supply to mint (in whole values)")
-    .addParam("name", "token name")
-    .addParam("symbol", "token symbol")
+
+task('deploy-masterchef', 'Deploy Masterchef contract')
+  .addParam("tokenperblock", "emission per block")
+  .addParam("start", "startblock to active yield farming")
+  .setAction(async (args, hre) => {
+    const masterchef = await hre.ethers.getContractFactory(`contracts/MasterChef.sol:MasterChef`)
+    const instance = await masterchef.deploy(config.bullAddress, config.devFeeAddr, config.feeAddr, args.tokenPerBlock*10^18, args.start)
+
+    await instance.deployed()
+
+    logger.info(instance.address)
+  })
+
+
+task("verify-masterchef", "Verify Masterchef Contract")
+  .addParam("tokenperblock", "emission per block")
+  .addParam("start", "startblock to active yield farming")
+  .setAction(
+    async (args, hre) => {
+      await hre.run("verify:verify", {
+        address: config.masterchef,
+        constructorArguments: [config.bullAddress, config.devFeeAddr, config.feeAddr, args.tokenPerBlock*10^18, args.start],
+        contract: "contracts/MasterChef.sol:MasterChef"
+      });
+    }
+  );
+
+
+task('deploy-multicall', 'Deploys Multicall contract')
     .setAction(async (args, hre) => {
-        const factory = await hre.ethers.getContractFactory(`contracts/test/MockERC20.sol:MockERC20`)
-        const instance = await factory.deploy(args.to, ethers.utils.parseEther(args.supply), args.name, args.symbol)
+        const multicall = await hre.ethers.getContractFactory(`contracts/Multicall.sol:Multicall`)
+        const instance = await multicall.deploy()
 
         await instance.deployed()
 
         logger.info(instance.address)
     })
 
-task("verify-token", "Verifies token Contract")
-    .addParam("to", "address to send tokens to")
-    .addParam("supply", "Supply to mint (in whole values)")
-    .addParam("name", "token name")
-    .addParam("symbol", "token symbol")
+
+task("verify-multicall", "Verifies multicall Contract")
     .setAction(
         async (args, hre) => {
             await hre.run("verify:verify", {
-                address: config.mockToken,
-                constructorArguments: [args.to, ethers.utils.parseEther(args.supply), args.name, args.symbol],
-                contract: "contracts/test/MockERC20.sol:MockERC20"
+                address: config.multicall2,
+                constructorArguments: [],
+                contract: "contracts/Multicall.sol:Multicall"
             });
         }
     );
+
+
+
+
+
